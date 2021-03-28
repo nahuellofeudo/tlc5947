@@ -53,7 +53,6 @@ class LegoController:
                     buffer.append((total_value >> 16) & 0xff)
                     buffer.append((total_value >> 8) & 0xff)
                     buffer.append((total_value >> 0) & 0xff)
-            print("buffer: " + str(buffer))
-            self.spi.xfer(buffer)
+            self.spi.xfer2(buffer)
         finally:
             self.lock.release()
