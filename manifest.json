@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "name": "Lego Lights",
   "documentation": "https://www.home-assistant.io/integrations/lego",
-  "dependencies": [],
+  "dependencies": ["spidev"],
   "codeowners": [],
   "requirements": ["spidev"],
   "quality_scale": "silver"
