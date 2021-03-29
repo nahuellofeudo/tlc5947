@@ -23,9 +23,10 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
 
     for model_idx in range(0, len(config['models'])):
         model = config['models'][model_idx]
+        model_name = model['name']
         for dev_idx in range(0, len(model['lights'])):
             device = model['lights'][dev_idx]
-            light = LegoLight(hass, int(model_idx), int(device['id']), device['name'], controller)
+            light = LegoLight(hass, int(model_idx), int(device['id']), device['name'], model_name, controller)
             lights.append(light)
 
     add_entities(lights, True)
@@ -38,14 +39,16 @@ class LegoLight(LightEntity):
     _state = STATE_OFF
 
     def __init__(self, hass: HomeAssistant, 
-            model_nr: int, light_id: int, name: str, 
+            model_nr: int, light_id: int, 
+            name: str, model_name: str,
             controller: LegoController):
 
         self.controller = controller
 
-        self.entity_id = "light.lego_{}_{}".format(model_nr, light_id)
+        self.entity_id = "light.lego_{}_{}".format(model_name.lower(), name.lower().replace(" ", "_"))
         self._light_id = light_id
         self._name = name
+        self._model_name = model_name
         self.last_seen = datetime.now()
         self.controller.set_light(model_nr, light_id, self)
 
