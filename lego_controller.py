@@ -72,4 +72,4 @@ class LegoController:
             for animated_light in self.animated_lights:
                 animated_light.animate()
             self.update()
-            time.sleep(0.3)
+            time.sleep(0.2)
