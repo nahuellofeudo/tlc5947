@@ -61,6 +61,7 @@ class LegoLight(LightEntity):
         self._light_id = light_id
         self._name = name
         self._model_name = model_name
+        self._max_brightness = max_brightness
         self.last_seen = datetime.now()
         self.controller.set_light(model_nr, light_id, self)
 
@@ -101,7 +102,7 @@ class LegoLight(LightEntity):
 
     def brightness(self):
         if self.is_on:
-            return self.max_brightness
+            return self._max_brightness
         return 0
 
 
@@ -111,7 +112,7 @@ class LegoAnimatedLight(LegoLight):
             name: str, model_name: str,
             max_brightness: int,
             controller: LegoController):
-        super().__init__(self, hass, model_nr, light_id, name, model_name, max_brightness, controller)
+        super().__init__(hass, model_nr, light_id, name, model_name, max_brightness, controller)
         self._current_brightness = 0
 
     def turn_on(self):
@@ -134,5 +135,5 @@ class LegoAnimatedLight(LegoLight):
 
 class LegoFireplace(LegoAnimatedLight):
     def animate(self):
-        self._current_brightness = (max_brightness / 3) + int(random.random() * (max_brightness / 3))
+        self._current_brightness = int((self._max_brightness / 3) + (random.random() * (self._max_brightness / 3)))
         

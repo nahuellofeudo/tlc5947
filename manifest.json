@@ -1,6 +1,6 @@
 {
+  "version": "1.0.0",
   "domain": "light.lego",
-  "version": "0.0.1",
   "name": "Lego Lights",
   "documentation": "https://www.home-assistant.io/integrations/lego",
   "dependencies": ["spidev"],
