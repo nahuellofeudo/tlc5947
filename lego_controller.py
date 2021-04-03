@@ -2,16 +2,20 @@ import spidev
 from .constants import Constants
 from .dummy_lego_light import DummyLegoLight
 import threading
+import time
 
 class LegoController:
     
     spi: spidev.SpiDev
     lights_state = []
+    animated_lights = []
     num_models: int
     lock: threading.Lock
+    animation_thread: threading.Thread
 
     def __init__(self, num_models: int):
         self.lock = threading.Lock()
+        self.animation_thread = threading.Thread(target = self.animate)
 
         self.spi = spidev.SpiDev()
         self.spi.open(0, 0)
@@ -30,9 +34,13 @@ class LegoController:
                 controller_lights.append(DummyLegoLight())
             
             self.lights_state.append(controller_lights)
+        
+        self.animation_thread.start()
 
     def set_light(self, model_nr: int, light_nr: int, light):
         self.lights_state[model_nr][light_nr] = light
+        if light.is_animated:
+            self.animated_lights.append(light)
 
 
     def update(self):
@@ -56,3 +64,12 @@ class LegoController:
             self.spi.xfer2(buffer)
         finally:
             self.lock.release()
+
+    def animate(self):
+        animated_light: LegoAnimatedLight
+
+        while True:
+            for animated_light in self.animated_lights:
+                animated_light.animate()
+            self.update()
+            time.sleep(0.3)

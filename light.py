@@ -8,6 +8,7 @@ from .lego_controller import LegoController
 from homeassistant.const import STATE_UNAVAILABLE, STATE_ON, STATE_OFF
 from homeassistant.components.light import LightEntity, SUPPORT_BRIGHTNESS, Light
 import spidev
+import random
 
 DOMAIN = Constants.DOMAIN
 
@@ -17,7 +18,6 @@ controller: None
 def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=None):
     global lights
     global controller
-    print("--- Hello from lego setup platform")
 
     controller = LegoController(len(config['models']))
 
@@ -26,7 +26,18 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
         model_name = model['name']
         for dev_idx in range(0, len(model['lights'])):
             device = model['lights'][dev_idx]
-            light = LegoLight(hass, int(model_idx), int(device['id']), device['name'], model_name, controller)
+            device_type = (device.get('type') or "light").lower()
+            device_max_brightness = int(device.get('brightness') or '255')
+            if  device_type == 'light':
+                light = LegoLight(hass, int(model_idx), int(device['id']), 
+                        device['name'], model_name, 
+                        device_max_brightness,
+                        controller)
+            if device_type == 'fireplace':
+                light = LegoFireplace(hass, int(model_idx), int(device['id']), 
+                        device['name'], model_name, 
+                        device_max_brightness,
+                        controller)
             lights.append(light)
 
     add_entities(lights, True)
@@ -41,6 +52,7 @@ class LegoLight(LightEntity):
     def __init__(self, hass: HomeAssistant, 
             model_nr: int, light_id: int, 
             name: str, model_name: str,
+            max_brightness: int,
             controller: LegoController):
 
         self.controller = controller
@@ -77,6 +89,10 @@ class LegoLight(LightEntity):
     def name(self):
         return self._name
 
+    @property
+    def is_animated(self):
+        return False
+
     def turn_on(self):
         self.state = STATE_ON
 
@@ -85,9 +101,38 @@ class LegoLight(LightEntity):
 
     def brightness(self):
         if self.is_on:
-            return 255
+            return self.max_brightness
         return 0
 
 
+class LegoAnimatedLight(LegoLight):
+    def __init__(self, hass: HomeAssistant, 
+            model_nr: int, light_id: int, 
+            name: str, model_name: str,
+            max_brightness: int,
+            controller: LegoController):
+        super().__init__(self, hass, model_nr, light_id, name, model_name, max_brightness, controller)
+        self._current_brightness = 0
 
+    def turn_on(self):
+        self.state = STATE_ON
 
+    def turn_off(self):
+        self.state = STATE_OFF
+
+    @property
+    def is_animated(self):
+        return True
+
+    def brightness(self):
+        if self.is_on:
+            return self._current_brightness
+        return 0
+
+    def animate(self):
+        pass
+
+class LegoFireplace(LegoAnimatedLight):
+    def animate(self):
+        self._current_brightness = (max_brightness / 3) + int(random.random() * (max_brightness / 3))
+        
