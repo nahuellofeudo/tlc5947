@@ -70,6 +70,10 @@ class LegoLight(LightEntity):
         self.schedule_update_ha_state()
         
     @property
+    def unique_id(self):
+        return self.entity_id
+
+    @property
     def is_on(self):
         return (self.state == STATE_ON)
 
