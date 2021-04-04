@@ -1,14 +1,15 @@
 """ Model for a single light """
-from datetime import datetime
-
-from homeassistant.core import HomeAssistant
-
 from .constants import Constants
 from .lego_controller import LegoController
-from homeassistant.const import STATE_UNAVAILABLE, STATE_ON, STATE_OFF
 from homeassistant.components.light import LightEntity, SUPPORT_BRIGHTNESS, Light
+from homeassistant.const import STATE_UNAVAILABLE, STATE_ON, STATE_OFF
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.entity_platform import EntityPlatform
+
 import spidev
 import random
+from datetime import datetime
 
 DOMAIN = Constants.DOMAIN
 
@@ -97,6 +98,10 @@ class LegoLight(LightEntity):
     @property
     def is_animated(self):
         return False
+    
+    @property
+    def device_class(self):
+        return ["switch"]
 
     def turn_on(self):
         self.state = STATE_ON
@@ -108,6 +113,7 @@ class LegoLight(LightEntity):
         if self.is_on:
             return self._max_brightness
         return 0
+
 
 
 class LegoAnimatedLight(LegoLight):
