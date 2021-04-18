@@ -1,10 +1,14 @@
 {
-  "version": "1.0.0",
   "domain": "light.lego",
   "name": "Lego Lights",
   "documentation": "https://www.home-assistant.io/integrations/lego",
-  "dependencies": ["spidev"],
-  "codeowners": [],
-  "requirements": ["spidev"],
-  "quality_scale": "silver"
+  "issue_tracker": "https://github.com/nahuellofeudo/lego/issues",
+  "dependencies": [],
+  "codeowners": [
+    "@nlofeudo"
+  ],
+  "requirements": [
+    "spidev==3.5"
+  ],
+  "version": "v1.0.0"
 }

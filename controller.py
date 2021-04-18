@@ -1,6 +1,6 @@
 import spidev
 from .constants import Constants
-from .dummy_lego_light import DummyLegoLight
+from .lego_dummy_light_entity import DummyLegoLight
 import threading
 import time
 

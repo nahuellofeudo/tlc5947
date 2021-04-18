@@ -1,2 +1,2 @@
 class Constants:
-    DOMAIN = "light"
+    DOMAIN = "light.lego"
