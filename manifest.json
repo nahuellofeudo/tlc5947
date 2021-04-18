@@ -1,5 +1,5 @@
 {
-  "domain": "light.lego",
+  "domain": "lego",
   "name": "Lego Lights",
   "documentation": "https://www.home-assistant.io/integrations/lego",
   "issue_tracker": "https://github.com/nahuellofeudo/lego/issues",
