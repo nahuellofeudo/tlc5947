@@ -66,8 +66,6 @@ class LegoController:
             self.lock.release()
 
     def animate(self):
-        animated_light: LegoAnimatedLight
-
         while True:
             for animated_light in self.animated_lights:
                 animated_light.animate()
