@@ -23,17 +23,18 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
     for model_idx in range(0, len(config['models'])):
         model = config['models'][model_idx]
         model_name = model['name']
+        node_nr = int(model.get('node'))
         for dev_idx in range(0, len(model['lights'])):
             device = model['lights'][dev_idx]
             device_type = (device.get('type') or "light").lower()
             device_max_brightness = int(device.get('brightness') or '255')
             if  device_type == 'light':
-                light = LegoLight(hass, int(model_idx), int(device['id']), 
+                light = LegoLight(hass, node_nr, int(device['channel']), 
                         device['name'], model_name, 
                         device_max_brightness,
                         controller)
             if device_type == 'fireplace':
-                light = LegoFireplace(hass, int(model_idx), int(device['id']), 
+                light = LegoFireplace(hass, node_nr, int(device['channel']), 
                         device['name'], model_name, 
                         device_max_brightness,
                         controller)
@@ -42,4 +43,3 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
     add_entities(lights, True)
     hass.states.set("lego.binding", "Loaded!")
     return True
-

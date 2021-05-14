@@ -9,11 +9,11 @@ from homeassistant.helpers.entity_platform import EntityPlatform
 
 class LegoAnimatedLight(LegoLight):
     def __init__(self, hass: HomeAssistant, 
-            model_nr: int, light_id: int, 
+            node: int, channel: int, 
             name: str, model_name: str,
             max_brightness: int,
             controller: LegoController):
-        super().__init__(hass, model_nr, light_id, name, model_name, max_brightness, controller)
+        super().__init__(hass, node, channel, name, model_name, max_brightness, controller)
         self._current_brightness = 0
 
     def turn_on(self):

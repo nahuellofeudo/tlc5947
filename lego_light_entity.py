@@ -14,7 +14,7 @@ class LegoLight(LightEntity):
     _state = STATE_OFF
 
     def __init__(self, hass: HomeAssistant, 
-            model_nr: int, light_id: int, 
+            node: int, channel: int, 
             name: str, model_name: str,
             max_brightness: int,
             controller: LegoController):
@@ -22,12 +22,12 @@ class LegoLight(LightEntity):
         self.controller = controller
 
         self.entity_id = "light.lego_{}_{}".format(model_name.lower(), name.lower().replace(" ", "_"))
-        self._light_id = light_id
+        self._channel = channel
         self._name = name
         self._model_name = model_name
         self._max_brightness = max_brightness
         self.last_seen = datetime.now()
-        self.controller.set_light(model_nr, light_id, self)
+        self.controller.set_light(node, channel, self)
 
     def updated(self):
         self.last_seen = datetime.now()
