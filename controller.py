@@ -2,6 +2,7 @@ import spidev
 from .constants import Constants
 from .lego_dummy_light_entity import DummyLegoLight
 import threading
+import logging
 import time
 
 class LegoController:
@@ -19,10 +20,8 @@ class LegoController:
 
         self.spi = spidev.SpiDev()
         self.spi.open(0, 0)
-        self.spi.max_speed_hz = 5000
-
-        to_send = [0x01, 0x02, 0x03]
-        self.spi.xfer(to_send)
+        self.spi.mode = 1
+        self.spi.max_speed_hz = 100000
 
         # create the arrays to store all the values of all the lights
         # By default populate the model with dummy lights
@@ -61,6 +60,7 @@ class LegoController:
                     buffer.append((total_value >> 16) & 0xff)
                     buffer.append((total_value >> 8) & 0xff)
                     buffer.append((total_value >> 0) & 0xff)
+            print("sending: {} bytes: {}".format(len(buffer), buffer.hex()))
             self.spi.xfer2(buffer)
         finally:
             self.lock.release()
@@ -70,4 +70,4 @@ class LegoController:
             for animated_light in self.animated_lights:
                 animated_light.animate()
             self.update()
-            time.sleep(0.2)
+            time.sleep(0.5)
