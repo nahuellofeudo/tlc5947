@@ -2,7 +2,6 @@ import spidev
 from .constants import Constants
 from .lego_dummy_light_entity import DummyLegoLight
 import threading
-import logging
 import time
 
 class LegoController:
@@ -60,7 +59,6 @@ class LegoController:
                     buffer.append((total_value >> 16) & 0xff)
                     buffer.append((total_value >> 8) & 0xff)
                     buffer.append((total_value >> 0) & 0xff)
-            print("sending: {} bytes: {}".format(len(buffer), buffer.hex()))
             self.spi.xfer2(buffer)
         finally:
             self.lock.release()
