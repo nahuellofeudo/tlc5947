@@ -1,8 +1,8 @@
 {
-  "domain": "lego",
-  "name": "Lego Lights",
-  "documentation": "https://www.home-assistant.io/integrations/lego",
-  "issue_tracker": "https://github.com/nahuellofeudo/lego/issues",
+  "domain": "tlc5947",
+  "name": "TLC-5947 controller",
+  "documentation": "https://www.home-assistant.io/integrations/tlc5947",
+  "issue_tracker": "https://github.com/nahuellofeudo/tlc5947/issues",
   "dependencies": [],
   "codeowners": [
     "@nlofeudo"

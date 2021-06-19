@@ -1,10 +1,10 @@
 import spidev
 from .constants import Constants
-from .lego_dummy_light_entity import DummyLegoLight
+from .tlc5947_dummy_light_entity import DummyTlc5947Light
 import threading
 import time
 
-class LegoController:
+class Tlc5947Controller:
     
     spi: spidev.SpiDev
     lights_state = []
@@ -29,7 +29,7 @@ class LegoController:
         for model in range(0, num_models):
             controller_lights = []
             for light in range(0, 24):
-                controller_lights.append(DummyLegoLight())
+                controller_lights.append(DummyTlc5947Light())
             
             self.lights_state.append(controller_lights)
         

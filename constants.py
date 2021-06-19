@@ -1,2 +1,2 @@
 class Constants:
-    DOMAIN = "lego"
+    DOMAIN = "tlc5947"

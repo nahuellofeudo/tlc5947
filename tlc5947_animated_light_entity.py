@@ -1,13 +1,13 @@
-from .lego_light_entity import LegoLight
+from .tlc5947_light_entity import Tlc5947Light
 from .constants import Constants
-from .controller import LegoController
+from .controller import Tlc5947Controller
 from homeassistant.components.light import LightEntity, SUPPORT_BRIGHTNESS, Light
 from homeassistant.const import STATE_UNAVAILABLE, STATE_ON, STATE_OFF
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity_platform import EntityPlatform
 
-class LegoAnimatedLight(LegoLight):
+class Tlc5947AnimatedLight(Tlc5947Light):
     def __init__(self, 
             hass: HomeAssistant, 
             node: int, 
@@ -15,7 +15,7 @@ class LegoAnimatedLight(LegoLight):
             channel: int, 
             name: str, 
             max_brightness: int,
-            controller: LegoController):
+            controller: Tlc5947Controller):
         super().__init__(hass, node, model_name, channel, name, max_brightness, controller)
         self._current_brightness = 0
 

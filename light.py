@@ -1,9 +1,9 @@
 """ Code that instantiates the appropriate objects to control the different lights """
 from .constants import Constants
-from .controller import LegoController
-from .lego_light_entity import LegoLight
-from .lego_fireplace_entity import LegoFireplace
-from .lego_composite_light_entity import LegoCompositeLight
+from .controller import Tlc5947Controller
+from .tlc5947_light_entity import Tlc5947Light
+from .tlc5947_fireplace_entity import Tlc5947Fireplace
+from .tlc5947_composite_light_entity import Tlc5947CompositeLight
 from homeassistant.components.light import LightEntity, SUPPORT_BRIGHTNESS, Light
 from homeassistant.const import STATE_UNAVAILABLE, STATE_ON, STATE_OFF
 from homeassistant.core import HomeAssistant
@@ -19,14 +19,16 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
     global lights
     global controller
 
-    controller = LegoController(len(config['models']))
+    nodes_list = config['nodes']
 
-    for model_idx in range(0, len(config['models'])):
-        model = config['models'][model_idx]
-        model_name = model['name']
-        node_nr = int(model.get('node'))
-        for dev_idx in range(0, len(model['lights'])):
-            device = model['lights'][dev_idx]
+    controller = Tlc5947Controller(len(nodes_list))
+
+    for node_idx in range(0, len(nodes_list)):
+        node = nodes_list[node_idx]
+        node_name = node['name']
+        node_nr = int(node.get('node'))
+        for dev_idx in range(0, len(node['lights'])):
+            device = node['lights'][dev_idx]
             device_type = (device.get('type') or "light").lower()
             device_name = device['name']
 
@@ -34,9 +36,9 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
                 device_max_brightness = int(device.get('brightness') or '255')
                 device_channel = int(device['channel'])
 
-                light = LegoLight(hass, 
+                light = Tlc5947Light(hass, 
                         node_nr,
-                        model_name, 
+                        node_name, 
                         device_channel, 
                         device_name, 
                         device_max_brightness,
@@ -46,9 +48,9 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
                 device_max_brightness = int(device.get('brightness') or '255')
                 device_channel = int(device['channel'])
 
-                light = LegoFireplace(hass, 
+                light = Tlc5947Fireplace(hass, 
                         node_nr, 
-                        model_name, 
+                        node_name, 
                         device_channel, 
                         device_name, 
                         device_max_brightness,
@@ -56,9 +58,9 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
             
             if device_type == 'composite':
                 components = device.get('components')
-                light = LegoCompositeLight(hass, 
+                light = Tlc5947CompositeLight(hass, 
                         node_nr, 
-                        model_name, 
+                        node_name, 
                         device['name'], 
                         components, 
                         controller)
@@ -66,5 +68,4 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
             lights.append(light)
 
     add_entities(lights, True)
-    hass.states.set("lego.binding", "Loaded!")
     return True
