@@ -33,7 +33,7 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
             device_name = device['name']
 
             if  device_type == 'light':
-                device_max_brightness = int(device.get('brightness') or '255')
+                device_max_brightness = max(int(device.get('brightness') or '100'), 100)
                 device_channel = int(device['channel'])
 
                 light = Tlc5947Light(hass, 
@@ -45,7 +45,7 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
                         controller)
             
             if device_type == 'fireplace':
-                device_max_brightness = int(device.get('brightness') or '255')
+                device_max_brightness = int(device.get('brightness') or '100')
                 device_channel = int(device['channel'])
 
                 light = Tlc5947Fireplace(hass, 

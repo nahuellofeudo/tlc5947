@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity_platform import EntityPlatform
 
-class Tlc5947CompositeLight(LightEntity):
+class Tlc5947CompositeLight(Tlc5947Light):
     controller: Tlc5947Controller
     _state = STATE_OFF
     _components = []
@@ -26,13 +26,14 @@ class Tlc5947CompositeLight(LightEntity):
         self.entity_id = "light.tlc5947_{}_{}".format(model_name.lower(), name.lower().replace(" ", "_"))
         self._name = name
         self._model_name = model_name
+        self._brightness = 100
         self.last_seen = datetime.now()
 
         # Instantiate component lights
         for component_idx in range (0, len(components)):
             component = components[component_idx]
             component_channel = int(component.get('channel'))
-            component_max_brightness = int(component.get('brightness') or '255')
+            component_max_brightness = int(component.get('brightness') or '100')
 
             component_light = Tlc5947ComponentLight(self, component_max_brightness)
             self.controller.set_light(node, component_channel, component_light)
@@ -42,44 +43,8 @@ class Tlc5947CompositeLight(LightEntity):
         self.schedule_update_ha_state()
         
     @property
-    def unique_id(self):
-        return self.entity_id
-
-    @property
-    def is_on(self):
-        return (self.state == STATE_ON)
-
-    @property
-    def supported_features(self):
-        return 0
-
-    @property
-    def state(self):
-        return self._state
-
-    @state.setter
-    def state(self, newstate):
-        self._state = newstate
-        self.controller.update()
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
     def is_animated(self):
         return False
-    
-    @property
-    def device_class(self):
-        return ["switch"]
-
-    def turn_on(self):
-        self.state = STATE_ON
-
-    def turn_off(self):
-        self.state = STATE_OFF
-
 
 
 
@@ -92,9 +57,10 @@ class Tlc5947ComponentLight():
         self._composite_light = composite_light
         self._max_brightness = _max_brightness
 
+    @property
     def brightness(self):
         if self._composite_light.is_on:
-            return self._max_brightness
+            return int ((self._max_brightness * self._composite_light.brightness) / 100)
         return 0
 
     @property

@@ -51,8 +51,8 @@ class Tlc5947Controller:
                 for light_nr in range(23, 0, -2):
                     # Lights are processed in pairs (23, 22), (21, 20), etc.
                     # So that 2 lights (8-bit brightness per light) -> 6 bytes (12 bits per light)
-                    msl_value = self.lights_state[model_nr][light_nr].brightness() & 0xff
-                    lsl_value = self.lights_state[model_nr][light_nr - 1].brightness() & 0xff
+                    msl_value = int (self.lights_state[model_nr][light_nr].brightness  * 2.55) & 0xff
+                    lsl_value = int (self.lights_state[model_nr][light_nr - 1].brightness * 2.55) & 0xff
                     total_value = (msl_value*16) << 12 | (lsl_value * 16)
 
                     # Add the bytes to the buffer

@@ -19,6 +19,10 @@ class Tlc5947AnimatedLight(Tlc5947Light):
         super().__init__(hass, node, model_name, channel, name, max_brightness, controller)
         self._current_brightness = 0
 
+    @property
+    def supported_features(self):
+        return 0
+
     def turn_on(self):
         self.state = STATE_ON
 
@@ -29,6 +33,7 @@ class Tlc5947AnimatedLight(Tlc5947Light):
     def is_animated(self):
         return True
 
+    @property
     def brightness(self):
         if self.is_on:
             return self._current_brightness

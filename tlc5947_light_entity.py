@@ -1,3 +1,4 @@
+from attr import attributes
 from .constants import Constants
 from .controller import Tlc5947Controller
 from datetime import datetime
@@ -17,7 +18,7 @@ class Tlc5947Light(LightEntity):
             model_name: str,
             channel: int,
             name: str, 
-            max_brightness: int,
+            default_brightness: int,
             controller: Tlc5947Controller):
 
         self.controller = controller
@@ -26,7 +27,7 @@ class Tlc5947Light(LightEntity):
         self._channel = channel
         self._name = name
         self._model_name = model_name
-        self._max_brightness = max_brightness
+        self._brightness = default_brightness
         self.last_seen = datetime.now()
         self.controller.set_light(node, channel, self)
 
@@ -44,7 +45,7 @@ class Tlc5947Light(LightEntity):
 
     @property
     def supported_features(self):
-        return 0
+        return SUPPORT_BRIGHTNESS
 
     @property
     def state(self):
@@ -67,13 +68,20 @@ class Tlc5947Light(LightEntity):
     def device_class(self):
         return ["switch"]
 
-    def turn_on(self):
+    def turn_on(self, **kwargs):
+        if kwargs.get('brightness') is not None:
+            self.brightness = kwargs.get('brightness')
         self.state = STATE_ON
 
     def turn_off(self):
         self.state = STATE_OFF
+    
+    @property
+    def brightness(self) -> int:
+        return self._brightness
 
-    def brightness(self):
-        if self.is_on:
-            return self._max_brightness
-        return 0
+    @brightness.setter
+    def brightness(self, newbrightness: int):
+        self._brightness = newbrightness
+
+    
