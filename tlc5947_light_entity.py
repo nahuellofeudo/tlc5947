@@ -78,7 +78,7 @@ class Tlc5947Light(LightEntity):
     
     @property
     def brightness(self) -> int:
-        return self._brightness
+        return self._brightness if self.is_on else 0
 
     @brightness.setter
     def brightness(self, newbrightness: int):
