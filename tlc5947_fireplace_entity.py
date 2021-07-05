@@ -14,7 +14,4 @@ class Tlc5947Fireplace(Tlc5947AnimatedLight):
     def animate(self):
         self._current_brightness = int((self._brightness / 3) + (random.random() * (self._brightness / 3)))
 
-    @property
-    def brightness(self) -> int:       
-        return self._current_brightness if self.is_on else 0
         

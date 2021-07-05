@@ -21,12 +21,14 @@ class Tlc5947Beacon(Tlc5947AnimatedLight):
             controller: Tlc5947Controller):
         super().__init__(hass, node, model_name, channel, name, max_brightness, controller)
         self._count = 0
+        self._brightness = max_brightness
 
     def animate(self):
         self._count = (self._count + 1) % 25
-        self._current_brightness = self.brightness if self._count == 0 else 0
+        self._current_brightness = self._brightness if self._count < 2 else 0
 
     @property
-    def brightness(self) -> int:       
-        return self._current_brightness if self.is_on else 0
+    def supported_features(self):
+        return SUPPORT_BRIGHTNESS
+
         

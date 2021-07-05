@@ -23,21 +23,13 @@ class Tlc5947AnimatedLight(Tlc5947Light):
     def supported_features(self):
         return 0
 
-    def turn_on(self):
-        self.state = STATE_ON
-
-    def turn_off(self):
-        self.state = STATE_OFF
-
     @property
     def is_animated(self):
         return True
 
     @property
-    def brightness(self):
-        if self.is_on:
-            return self._current_brightness
-        return 0
+    def brightness(self) -> int:       
+        return self._current_brightness if self.is_on else 0
 
     def animate(self):
         pass
