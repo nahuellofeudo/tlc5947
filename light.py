@@ -4,6 +4,7 @@ from .controller import Tlc5947Controller
 from .tlc5947_light_entity import Tlc5947Light
 from .tlc5947_fireplace_entity import Tlc5947Fireplace
 from .tlc5947_composite_light_entity import Tlc5947CompositeLight
+from .tlc5947_beacon_entity import Tlc5947Beacon
 from homeassistant.components.light import LightEntity, SUPPORT_BRIGHTNESS, Light
 from homeassistant.const import STATE_UNAVAILABLE, STATE_ON, STATE_OFF
 from homeassistant.core import HomeAssistant
@@ -28,6 +29,7 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
         node_name = node['name']
         node_nr = int(node.get('node'))
         for dev_idx in range(0, len(node['lights'])):
+            light = None
             device = node['lights'][dev_idx]
             device_type = (device.get('type') or "light").lower()
             device_name = device['name']
@@ -65,7 +67,20 @@ def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=Non
                         components, 
                         controller)
 
-            lights.append(light)
+            if device_type == 'beacon':
+                device_max_brightness = int(device.get('brightness') or '100')
+                device_channel = int(device['channel'])
+
+                light = Tlc5947Beacon(hass, 
+                        node_nr, 
+                        node_name, 
+                        device_channel, 
+                        device_name, 
+                        device_max_brightness,
+                        controller)
+
+            if light is not None:
+                lights.append(light)
 
     add_entities(lights, True)
     return True

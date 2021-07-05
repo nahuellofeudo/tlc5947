@@ -10,9 +10,21 @@ from homeassistant.helpers.entity_platform import EntityPlatform
 
 import random
 
-class Tlc5947Fireplace(Tlc5947AnimatedLight):
+class Tlc5947Beacon(Tlc5947AnimatedLight):
+    def __init__(self, 
+            hass: HomeAssistant, 
+            node: int, 
+            model_name: str,
+            channel: int, 
+            name: str, 
+            max_brightness: int,
+            controller: Tlc5947Controller):
+        super().__init__(hass, node, model_name, channel, name, max_brightness, controller)
+        self._count = 0
+
     def animate(self):
-        self._current_brightness = int((self._brightness / 3) + (random.random() * (self._brightness / 3)))
+        self._count = (self._count + 1) % 25
+        self._current_brightness = self.brightness if self._count == 0 else 0
 
     @property
     def brightness(self) -> int:       
